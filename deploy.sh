@@ -5,6 +5,7 @@ set -e
 SERVER_NAME="localhost"
 DIR_ROOT="/var/web/laravel"
 REPOSITORY="git@github.com:FramgiaDockerTeam/laravel-ssh-source.git"
+BRANCH="master"
 ENV_FILE="./.env"
 SHARE_ITEMS=( ".env" "storage" )
 NGINX_CONF_NAME="application"
@@ -32,7 +33,7 @@ make_dir()
 
 generate_public_key()
 {
-    if [ -f ~/.ssh/id_rsa ]; then
+    if [ -f ~/.ssh/id_rsa ] && [ ! -f ~/.ssh/id_rsa.pub ]; then
         chmod 0600 ~/.ssh/id_rsa
         ssh-keygen -f ~/.ssh/id_rsa -y > ~/.ssh/id_rsa.pub
         eval "$(ssh-agent -s)"
@@ -44,7 +45,7 @@ clone_source()
 {
     echo $DIR_TAG
     mkdir $DIR_TAG
-    git clone $REPOSITORY $DIR_TAG
+    git clone -b $BRANCH $REPOSITORY $DIR_TAG
 }
 
 common_tasks()
